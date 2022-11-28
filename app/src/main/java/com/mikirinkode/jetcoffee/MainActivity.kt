@@ -37,6 +37,64 @@ class MainActivity : ComponentActivity() {
 fun JetCoffeeApp() {
 }
 
+@Composable
+fun SearchBar(modifier: Modifier = Modifier) {
+    TextField(
+        value = "",
+        onValueChange = {},
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null
+            )
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = MaterialTheme.colors.surface,
+            disabledIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
+        placeholder = {
+            Text(stringResource(id = R.string.placeholder_search))
+        },
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .heightIn(min = 48.dp)
+            .clip(RoundedCornerShape(16.dp))
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchBarPreview() {
+    JetCoffeeTheme {
+        SearchBar()
+    }
+}
+
+@Composable
+fun Banner(modifier: Modifier = Modifier) {
+    Box (modifier = modifier){
+        Image(
+            painter = painterResource(id = R.drawable.banner),
+            contentDescription = "Banner Image",
+            contentScale = ContentScale.Crop,
+            modifier = modifier.height(160.dp)
+        )
+        SearchBar()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BannerPreview() {
+    JetCoffeeTheme {
+        Banner()
+    }
+}
+
+
 
 @Preview(showBackground = true, device = Devices.PIXEL_4, showSystemUi = true)
 @Composable
