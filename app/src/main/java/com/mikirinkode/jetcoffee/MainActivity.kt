@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mikirinkode.jetcoffee.component.HomeSection
 import com.mikirinkode.jetcoffee.model.*
 import com.mikirinkode.jetcoffee.ui.theme.JetCoffeeTheme
 
@@ -46,12 +47,16 @@ class MainActivity : ComponentActivity() {
 fun JetCoffeeApp() {
     Column {
         Banner()
-        SectionText(title = "Mau ngopi apa hari ini?")
-        CategoryRow(dummyCategory)
-        SectionText(title = "Menu Favorit")
-        MenuRow(dummyFavoriteMenu)
-        SectionText(title = "Menu Terlaris")
-        MenuRow(dummyMenu)
+        HomeSection(
+            title = stringResource(id = R.string.section_category),
+            content = { CategoryRow(list = dummyCategory) }
+        )
+        HomeSection(title = stringResource(id = R.string.section_favorite_menu)) {
+            MenuRow(dummyFavoriteMenu)
+        }
+        HomeSection(title = stringResource(id = R.string.section_best_seller_menu)) {
+            MenuRow(dummyMenu)
+        }
     }
 }
 
