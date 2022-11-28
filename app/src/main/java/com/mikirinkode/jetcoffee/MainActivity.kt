@@ -1,6 +1,7 @@
 package com.mikirinkode.jetcoffee
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -20,13 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mikirinkode.jetcoffee.model.Category
-import com.mikirinkode.jetcoffee.model.dummyCategory
+import com.mikirinkode.jetcoffee.model.*
 import com.mikirinkode.jetcoffee.ui.theme.JetCoffeeTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,7 +47,11 @@ fun JetCoffeeApp() {
     Column {
         Banner()
         SectionText(title = "Mau ngopi apa hari ini?")
-        CategoryRow()
+        CategoryRow(dummyCategory)
+        SectionText(title = "Menu Favorit")
+        MenuRow(dummyFavoriteMenu)
+        SectionText(title = "Menu Terlaris")
+        MenuRow(dummyMenu)
     }
 }
 
@@ -77,14 +83,6 @@ fun SearchBar(modifier: Modifier = Modifier) {
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SearchBarPreview() {
-    JetCoffeeTheme {
-        SearchBar()
-    }
-}
-
 @Composable
 fun Banner(modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
@@ -98,13 +96,6 @@ fun Banner(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BannerPreview() {
-    JetCoffeeTheme {
-        Banner()
-    }
-}
 
 @Composable
 fun CategoryItem(category: Category, modifier: Modifier = Modifier) {
@@ -123,36 +114,16 @@ fun CategoryItem(category: Category, modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CategoryItemPreview() {
-    JetCoffeeTheme {
-        CategoryItem(
-            category = Category(
-                R.drawable.icon_category_cappuccino,
-                R.string.category_cappuccino
-            ), modifier = Modifier.padding(horizontal = 8.dp)
-        )
-    }
-}
 
 @Composable
-fun CategoryRow(modifier: Modifier = Modifier) {
+fun CategoryRow(list: List<Category>, modifier: Modifier = Modifier) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        items(dummyCategory, key = { it.textCategory }) { category ->
+        items(list, key = { it.textCategory }) { category ->
             CategoryItem(category)
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CategoryRowPreview() {
-    JetCoffeeTheme {
-        CategoryRow()
     }
 }
 
@@ -166,6 +137,59 @@ fun SectionText(title: String, modifier: Modifier = Modifier) {
         modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
     )
+}
+
+@Composable
+fun MenuItem(menu: Menu, modifier: Modifier = Modifier) {
+    Card(modifier = modifier.width(140.dp), shape = RoundedCornerShape(8.dp)) {
+        Column {
+            Image(
+                painter = painterResource(menu.image),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Column(
+                modifier = modifier.padding(8.dp)
+            ) {
+                Text(
+                    text = menu.title,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold),
+                )
+                Text(
+                    text = "Rp ${menu.price}",
+                    style = MaterialTheme.typography.subtitle2,
+                )
+            }
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun MenuItemPrev() {
+    JetCoffeeTheme {
+        MenuItem(menu = Menu(R.drawable.menu1, "Tiramisu Coffee Milk", 28000.0))
+    }
+}
+
+
+@Composable
+fun MenuRow(list: List<Menu>) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        items(list, key = { it.title }) { menu ->
+            MenuItem(menu)
+        }
+    }
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_4, showSystemUi = true)
