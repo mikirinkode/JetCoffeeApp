@@ -8,10 +8,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,18 +49,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun JetCoffeeApp() {
-    Column {
-        Banner()
-        HomeSection(
-            title = stringResource(id = R.string.section_category),
-            content = { CategoryRow(list = dummyCategory) }
-        )
-        HomeSection(title = stringResource(id = R.string.section_favorite_menu)) {
-            MenuRow(dummyFavoriteMenu)
-        }
-        HomeSection(title = stringResource(id = R.string.section_best_seller_menu)) {
-            MenuRow(dummyMenu)
+fun JetCoffeeApp(modifier: Modifier = Modifier) {
+    Scaffold(
+        bottomBar = { BottomBar() }
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
+        ) {
+            Banner()
+            HomeSection(
+                title = stringResource(id = R.string.section_category),
+                content = { CategoryRow(list = dummyCategory) }
+            )
+            HomeSection(title = stringResource(id = R.string.section_favorite_menu)) {
+                MenuRow(dummyFavoriteMenu)
+            }
+            HomeSection(title = stringResource(id = R.string.section_best_seller_menu)) {
+                MenuRow(dummyMenu)
+            }
         }
     }
 }
@@ -175,16 +188,6 @@ fun MenuItem(menu: Menu, modifier: Modifier = Modifier) {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun MenuItemPrev() {
-    JetCoffeeTheme {
-        MenuItem(menu = Menu(R.drawable.menu1, "Tiramisu Coffee Milk", 28000.0))
-    }
-}
-
-
 @Composable
 fun MenuRow(list: List<Menu>) {
     LazyRow(
@@ -193,6 +196,43 @@ fun MenuRow(list: List<Menu>) {
     ) {
         items(list, key = { it.title }) { menu ->
             MenuItem(menu)
+        }
+    }
+}
+
+@Composable
+fun BottomBar(modifier: Modifier = Modifier) {
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colors.background,
+        contentColor = MaterialTheme.colors.primary,
+        modifier = modifier
+    ) {
+        val navigationItems = listOf(
+            BottomBarItem(
+                title = stringResource(id = R.string.menu_home),
+                icon = Icons.Default.Home
+            ),
+            BottomBarItem(
+                title = stringResource(id = R.string.menu_favorite),
+                icon = Icons.Default.Favorite
+            ),
+            BottomBarItem(
+                title = stringResource(id = R.string.menu_profile),
+                icon = Icons.Default.AccountCircle
+            )
+        )
+        navigationItems.map {
+            BottomNavigationItem(
+                icon = {
+                    Icon(imageVector = it.icon, contentDescription = it.title)
+                },
+                label = {
+                    Text(it.title)
+                },
+                selected = it.title == navigationItems[0].title,
+                unselectedContentColor = Color.LightGray,
+                onClick = {}
+            )
         }
     }
 }
